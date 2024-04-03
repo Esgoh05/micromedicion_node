@@ -17,7 +17,7 @@ app.use(express.json()) //configuracion para analizar solicitudes con formato JS
 app.use(express.urlencoded( {extended: false} )) //configuracion para analizar solicitudes con datos codificados en la URL
 
 //Definir rutas
-app.use('/api/v1', require('./routes/usersRoutes'))
+app.use('/api/v1/usuarios', require('./routes/usersRoutes'))
 
 app.use(errorHandler) //Manejo de errores
 
