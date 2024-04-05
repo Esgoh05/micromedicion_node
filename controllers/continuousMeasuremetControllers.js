@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const User = require('../models/usersModel')
 const Installation = require('../models/installationsModel')
-const ContinuousMeasurement = require('../models/continuousMeasurementsModel')
+const ContinuousMeasurement = require('../models/continuousMeasurementModel')
 
 const saveMeasurement = asyncHandler( async(request, response) => { 
     const  {caudalpromedio, tiempo, volumen, fin, iddispositivo} = request.body
