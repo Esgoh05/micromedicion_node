@@ -2,6 +2,7 @@
 const express = require('express')
 const dotenv = require('dotenv').config()
 const colors = require('colors')
+const cors = require('cors')
 const connectDB  = require('./config/db')
 const {errorHandler} = require( './middleware/errorMiddleware')
 
@@ -12,6 +13,8 @@ const port = process.env.PORT || 5001
 
 //Definir app
 const app = express()
+
+app.use(cors()) //Ejecuta cors
 
 app.use(express.json()) //configuracion para analizar solicitudes con formato JSON
 app.use(express.urlencoded( {extended: false} )) //configuracion para analizar solicitudes con datos codificados en la URL
