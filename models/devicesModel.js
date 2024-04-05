@@ -27,7 +27,7 @@ const deviceSchema = mongoose.Schema({
     },
     deviceStatus: {
         type: Number,
-        required: [true, 'Por favor introduce el estatus del dispositivo'],
+        required: [false],
         default: 1 // Valor predeterminado de 1 para deviceStatus (disponible)
     },
 }, {

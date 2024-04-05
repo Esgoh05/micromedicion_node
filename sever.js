@@ -18,6 +18,8 @@ app.use(express.urlencoded( {extended: false} )) //configuracion para analizar s
 
 //Definir rutas
 app.use('/api/v1/usuarios', require('./routes/usersRoutes'))
+app.use('/api/v1/dispositivos', require('./routes/devicesRoutes'))
+app.use('/api/v1/instalacion', require('./routes/installationsRoutes'))
 
 app.use(errorHandler) //Manejo de errores
 

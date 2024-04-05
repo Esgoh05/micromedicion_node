@@ -14,7 +14,7 @@ const installationSchema = mongoose.Schema({
         ref: 'Device' // Referencia a la coleccion
     },
     pipeDiameter: {
-        type: Number, // Tipo de datos para el diámetro de la tubería
+        type: String, // Tipo de datos para el diámetro de la tubería
         required: true // El diámetro de la tubería es obligatorio
     },
     ssid: {
@@ -27,7 +27,7 @@ const installationSchema = mongoose.Schema({
     },
     deviceLocation: {
         type: String, // ubicación de la instalación
-        required: true // La ubicación de la instalación es obligatoria
+        required: false // La ubicación de la instalación es obligatoria
     }
  
 }, {
