@@ -5,7 +5,7 @@ const {saveMeasurement} = require('../controllers/continuousMeasuremetController
 const {protect} = require('../middleware/authMiddleware')
 
 
-router.post('/guadaMedicion', protect, saveMeasurement)
+router.post('/guardaMedicion', protect, saveMeasurement)
 
 
 module.exports = router
