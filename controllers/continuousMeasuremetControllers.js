@@ -4,10 +4,10 @@ const Installation = require('../models/installationsModel')
 const ContinuousMeasurement = require('../models/continuousMeasurementModel')
 
 const saveMeasurement = asyncHandler( async(request, response) => { 
-    const  {caudalpromedio, tiempo, volumen, fin, iddispositivo} = request.body
+    const  {averageFlow, time, volume, end, deviceId} = request.body
 
     //verificamos que nos pasen todos los datos necesarios para guardar medicion continua del dispositivo
-     if(!caudalpromedio || !tiempo || !volumen || !fin || !iddispositivo){
+     if(!averageFlow || !time || !volume || !end || !deviceId){
         response.status(400)
         throw new Error('Faltan datos')
     }
@@ -17,21 +17,21 @@ const saveMeasurement = asyncHandler( async(request, response) => {
         console.log('El usuario existe');
 
         let continuousMeasurement = await ContinuousMeasurement.create({
-            caudalpromedio,
-            tiempo,
-            volumen,
-            fin,
-            iddispositivo
+            averageFlow,
+            time,
+            volume,
+            end,
+            deviceId
         })
 
         if(continuousMeasurement){
             response.status(201).json({
-                _id: device._id,
-                averageFlow: continuousMeasurement.caudalpromedio,
+                _id: continuousMeasurement._id,
+                averageFlow: continuousMeasurement.averageFlow,
                 time: continuousMeasurement.time,
-                volume: continuousMeasurement.volumen,
-                end: continuousMeasurement.fin,
-                deviceId: continuousMeasurement.iddispositivo
+                volume: continuousMeasurement.volume,
+                end: continuousMeasurement.end,
+                deviceId: continuousMeasurement.deviceId
             })
             
         } else{
