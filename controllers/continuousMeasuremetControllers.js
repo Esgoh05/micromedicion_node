@@ -13,7 +13,7 @@ const saveMeasurement = asyncHandler( async(request, response) => {
     }
 
     // Verificar si el usuario es un administrador
-    if (request.user) {
+    //if (request.user) {
         console.log('El usuario existe');
 
         let continuousMeasurement = await ContinuousMeasurement.create({
@@ -40,11 +40,11 @@ const saveMeasurement = asyncHandler( async(request, response) => {
         }
     
 
-    } else {
+    /*} else {
         console.log('El usuario no ha sido encontrado');
         response.status(400)
         throw new Error('El usuario no ha sido encontrado')
-    }
+    }*/
 
 })
 
