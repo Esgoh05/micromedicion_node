@@ -96,7 +96,7 @@ const guardarMediciones = (request, response ) => {
 //funcion para generar token
 const generateToken = (id_usuario) => {
     return jwt.sign({id_usuario}, process.env.JWT_SECRET, {
-        expiresIn: '15min'
+        expiresIn: '300min'
     })
 }
 
