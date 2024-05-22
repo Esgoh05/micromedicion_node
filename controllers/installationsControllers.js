@@ -88,6 +88,32 @@ const getEmailsAndDevices = asyncHandler(async (request, response) => {
     }
 });
 
+const getInstallations = asyncHandler( async(request, response) => { 
+    try {
+        // Verificar si el usuario es administrador
+        if (request.user && request.user.isAdmin) {
+            // Si el usuario es administrador, obtener la información de todos los dispositivos
+            const installations = await Installation.find().select('userId deviceId pipeDiameter deviceLocation'); 
+            
+            // Recorrer las instalaciones y acceder al userId de cada una
+            /*installations.forEach(installation => {
+                console.log(installation.userId);
+                // Buscar el usuario por su ID
+                const userWithEmail = User.findById(installation.userId);
+            });*/
+
+            // Responder con la información de todos los dispositivos
+            response.status(200).json(installations);
+        } else {
+            // Si el usuario no es administrador, responder con un error de autorización
+            response.status(401).json({ error: 'No autorizadoooo' });
+        }
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: 'Error al obtener información de dispositivos' });
+    }
+})
+
 
 
 
@@ -95,4 +121,5 @@ const getEmailsAndDevices = asyncHandler(async (request, response) => {
 module.exports = {
     createInstallation,
     getEmailsAndDevices,
+    getInstallations
 }
