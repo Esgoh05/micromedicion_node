@@ -9,6 +9,7 @@ router.post('/guardaMedicion', saveMeasurement)
 router.get('/obtenerMediciones', getMeasurement)
 router.post('/filtrarMedicion', filterMeasurement)
 router.post('/filtraMedicionMes', filterMonthMeasurement)
+router.post('/filtraMedicionPeriodo', filterMonthMeasurement)
 
 
 module.exports = router
