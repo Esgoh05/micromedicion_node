@@ -90,7 +90,8 @@ const getMeasurement = asyncHandler(async (request, response) => {
                         year: { $year: "$end" },
                         month: { $month: "$end" },
                         day: { $dayOfMonth: "$end" },
-                        deviceId: "$deviceId"
+                        deviceId: "$deviceId",
+                        type: "$type"
                     },
                     totalAverageFlow: { $sum: "$averageFlow" }
                 }
@@ -111,7 +112,8 @@ const getMeasurement = asyncHandler(async (request, response) => {
                         }
                     },
                     deviceId: "$_id.deviceId",
-                    totalAverageFlow: 1
+                    totalAverageFlow: 1,
+                    type: "$_id.type" 
                 }
             },
             {
@@ -121,7 +123,12 @@ const getMeasurement = asyncHandler(async (request, response) => {
             }
         ]);
 
-        response.status(200).json(continuousMeasurements);
+        const filterMeasurement = continuousMeasurements.map(measurement => ({
+            ...measurement,
+            typeFilter: 'none' 
+        }));
+
+        response.status(200).json(filterMeasurement);
     } catch (error) {
         console.error(error);
         response.status(500).json({ error: 'Error al obtener información de dispositivos' });
@@ -249,7 +256,8 @@ const filterMeasurement = asyncHandler(async (request, response) => {
                         day: { $dayOfMonth: "$end" },
                         month: { $month: "$end" },
                         year: { $year: "$end" },
-                        deviceId: "$deviceId"
+                        deviceId: "$deviceId",
+                        type: "$type" 
                     },
                     totalAverageFlow: { $sum: "$averageFlow" }
                 }
@@ -270,7 +278,8 @@ const filterMeasurement = asyncHandler(async (request, response) => {
                         }
                     },
                     deviceId: "$_id.deviceId",
-                    totalAverageFlow: 1
+                    totalAverageFlow: 1,
+                    type: "$_id.type"
                 }
             },
             {
@@ -278,19 +287,105 @@ const filterMeasurement = asyncHandler(async (request, response) => {
             }
         ]);
 
-        console.log(measurements);
+        const filterMeasurement = measurements.map(measurement => ({
+            ...measurement,
+            typeFilter: 'multiSelect' 
+        }));
+
+        console.log(filterMeasurement);
 
         // Responder con las mediciones filtradas
-        response.status(200).json(measurements);
+        response.status(200).json(filterMeasurement);
     } catch (error) {
         response.status(500).json({ error: 'Error al filtrar las mediciones' });
     }
 });
+
+const filterMonthMeasurement = asyncHandler(async (request, response) => {
+    const { month } = request.body;
+
+    // Verificamos que nos pasen todos los datos necesarios para guardar medición continua del dispositivo
+    if (!month) {
+        response.status(400);
+        throw new Error('Faltan datos');
+    }
+
+    // Extraer año y mes del formato 'YYYY-MM'
+    const [year, monthPart] = month.split('-').map(part => parseInt(part, 10));
+
+    if (isNaN(year) || isNaN(monthPart)) {
+        response.status(400);
+        throw new Error('Formato de mes inválido');
+    }
+
+    console.log(`Year: ${year}, Month: ${monthPart}`);
+
+    try {
+        const measurements = await ContinuousMeasurement.aggregate([
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$end" },
+                        month: { $month: "$end" },
+                        day: { $dayOfMonth: "$end" },
+                        deviceId: "$deviceId",
+                        type: "$type"
+                    },
+                    totalAverageFlow: { $sum: "$averageFlow" }
+                }
+            },
+            {
+                $match: {
+                    "_id.year": year,
+                    "_id.month": monthPart
+                }
+            },
+            {
+                $project: {
+                    _id: 0, 
+                    date: {
+                        $dateToString: {
+                            format: "%d/%m/%Y",
+                            date: {
+                                $dateFromParts: {
+                                    year: "$_id.year",
+                                    month: "$_id.month",
+                                    day: "$_id.day"
+                                }
+                            }
+                        }
+                    },
+                    deviceId: "$_id.deviceId",
+                    totalAverageFlow: 1,
+                    type: "$_id.type" 
+                }
+            },
+            {
+                $sort: {
+                    date: 1
+                }
+            }
+        ]);
+
+        const filterMeasurement = measurements.map(measurement => ({
+            ...measurement,
+            typeFilter: 'monthFilter' 
+        }));
+
+        console.log(filterMeasurement);
+        response.status(200).json(filterMeasurement);
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: 'Error al obtener información de dispositivos' });
+    }
+});
+
 
 
 
 module.exports = {
     saveMeasurement,
     getMeasurement,
-    filterMeasurement
+    filterMeasurement,
+    filterMonthMeasurement
 }
